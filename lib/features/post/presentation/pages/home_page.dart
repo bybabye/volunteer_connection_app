@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
     if (_postProvider.status == PostStatus.loading) {
       return const CircularProgressIndicator();
     } else if (_postProvider.status == PostStatus.failed) {
-      return const Text("Failed");
+      return const Text("Lỗi hệ thống");
     } else if (_postProvider.status == PostStatus.success) {
       return const Text("co data");
     } else {

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:volunteer_connection/core/resources/data_state.dart';
+import 'package:volunteer_connection/features/post/data/datasource/post_data_source.dart';
+import 'package:volunteer_connection/features/post/data/repositories/post_repository_impl.dart';
 
 import 'package:volunteer_connection/features/post/domain/entities/post.dart';
 
@@ -17,13 +19,14 @@ class PostProvider extends ChangeNotifier {
 
   final List<Post> _posts;
   PostStatus _status;
-
+  String error = "";
   PostStatus get status => _status;
 
   List<Post> get post => _posts;
 
   PostProvider({posts})
-      : _getPostUseCase = GetPostUseCase(),
+      : _getPostUseCase =
+            GetPostUseCase(PostRepositoryImpl(PostsDataSourceImlp())),
         _status = PostStatus.initial,
         _posts = posts ?? [];
 
@@ -34,10 +37,12 @@ class PostProvider extends ChangeNotifier {
       final dataState = await _getPostUseCase();
       if (dataState is DataSuccess && dataState.data!.isNotEmpty) {
         _posts.addAll(dataState.data!);
+        print(dataState.data!);
       }
       if (dataState is DataFailed) {
         _status = PostStatus.failed;
         print(dataState.error);
+        error = dataState.error.toString();
         notifyListeners();
         return;
       }

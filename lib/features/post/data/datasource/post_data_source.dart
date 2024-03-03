@@ -3,22 +3,19 @@ import 'package:dio/dio.dart';
 import 'package:volunteer_connection/features/post/domain/entities/post.dart';
 
 abstract class PostsDataSource {
-  Future<Response<List<Post>>> getAllPost(String api);
+  Future<Response<List<Post>>> getAllPost();
 }
 
+// chịu trách nhiệm gọi api chuyển đổi dữ liệu và bắt các exception
 class PostsDataSourceImlp implements PostsDataSource {
-  late Dio dio;
-
-  PostsDataSourceImlp() {
-    dio = Dio();
-  }
+  final dio = Dio();
 
   @override
-  Future<Response<List<Post>>> getAllPost(String api) async {
+  Future<Response<List<Post>>> getAllPost() async {
     Response response;
 
     try {
-      response = await dio.get(api);
+      response = await dio.get("http://10.0.2.2:4000/v1/post");
       List<Post> result =
           (response.data!['data'] as List).map<Post>((dynamic i) {
         return Post.fromJson(
@@ -34,7 +31,7 @@ class PostsDataSourceImlp implements PostsDataSource {
       return Response(
         statusCode: 500,
         statusMessage: e.toString(),
-        data: [],
+        data: null,
         requestOptions: RequestOptions(),
       );
     }

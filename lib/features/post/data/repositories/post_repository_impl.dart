@@ -5,16 +5,13 @@ import 'package:volunteer_connection/features/post/domain/entities/post.dart';
 import 'package:volunteer_connection/features/post/domain/respository/post_respository.dart';
 
 class PostRepositoryImpl implements PostRespository {
-  late PostsDataSourceImlp _postDSI;
-  PostRepositoryImpl() {
-    _postDSI = PostsDataSourceImlp();
-  }
+  final PostsDataSourceImlp _postDSI;
+  PostRepositoryImpl(this._postDSI);
 
   @override
   Future<DataState<List<Post>>> getAllPost() async {
     try {
-      final httpResponse =
-          await _postDSI.getAllPost("http://10.0.2.2:4000/v1/posts");
+      final httpResponse = await _postDSI.getAllPost();
       if (httpResponse.statusCode == 200) {
         return DataSuccess(httpResponse.data!);
       } else {
