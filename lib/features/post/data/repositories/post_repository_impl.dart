@@ -1,8 +1,8 @@
 import 'package:volunteer_connection/core/resources/data_state.dart';
-import 'package:volunteer_connection/features/data/datasource/post/post_data_source.dart';
-import 'package:volunteer_connection/features/data/models/post/post.dart';
+import 'package:volunteer_connection/features/post/data/datasource/post_data_source.dart';
+import 'package:volunteer_connection/features/post/domain/entities/post.dart';
 
-import 'package:volunteer_connection/features/domain/respository/post_respository.dart';
+import 'package:volunteer_connection/features/post/domain/respository/post_respository.dart';
 
 class PostRepositoryImpl implements PostRespository {
   late PostsDataSourceImlp _postDSI;
@@ -11,7 +11,7 @@ class PostRepositoryImpl implements PostRespository {
   }
 
   @override
-  Future<DataState<List<PostModel>>> getAllPost() async {
+  Future<DataState<List<Post>>> getAllPost() async {
     try {
       final httpResponse =
           await _postDSI.getAllPost("http://10.0.2.2:4000/v1/posts");

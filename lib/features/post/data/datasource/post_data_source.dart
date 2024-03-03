@@ -1,8 +1,9 @@
 import 'package:dio/dio.dart';
-import 'package:volunteer_connection/features/data/models/post/post.dart';
+
+import 'package:volunteer_connection/features/post/domain/entities/post.dart';
 
 abstract class PostsDataSource {
-  Future<Response<List<PostModel>>> getAllPost(String api);
+  Future<Response<List<Post>>> getAllPost(String api);
 }
 
 class PostsDataSourceImlp implements PostsDataSource {
@@ -13,14 +14,14 @@ class PostsDataSourceImlp implements PostsDataSource {
   }
 
   @override
-  Future<Response<List<PostModel>>> getAllPost(String api) async {
+  Future<Response<List<Post>>> getAllPost(String api) async {
     Response response;
 
     try {
       response = await dio.get(api);
-      List<PostModel> result =
-          (response.data!['data'] as List).map<PostModel>((dynamic i) {
-        return PostModel.fromJson(
+      List<Post> result =
+          (response.data!['data'] as List).map<Post>((dynamic i) {
+        return Post.fromJson(
           i as Map<String, dynamic>,
         );
       }).toList();

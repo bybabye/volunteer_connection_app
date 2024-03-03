@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:volunteer_connection/core/resources/data_state.dart';
-import 'package:volunteer_connection/features/data/models/post/post.dart';
-import 'package:volunteer_connection/features/data/repositories/post/post_repository_impl.dart';
 
-import 'package:volunteer_connection/features/domain/usecases/posts/get_post.dart';
+import 'package:volunteer_connection/features/post/domain/entities/post.dart';
+
+import 'package:volunteer_connection/features/post/domain/usecases/get_post.dart';
 
 enum PostStatus {
   initial,
@@ -15,15 +15,15 @@ enum PostStatus {
 class PostProvider extends ChangeNotifier {
   final GetPostUseCase _getPostUseCase;
 
-  final List<PostModel> _posts;
+  final List<Post> _posts;
   PostStatus _status;
 
   PostStatus get status => _status;
 
-  List<PostModel> get post => _posts;
+  List<Post> get post => _posts;
 
-  PostProvider({getPostUseCase, posts, status})
-      : _getPostUseCase = GetPostUseCase(PostRepositoryImpl()),
+  PostProvider({posts})
+      : _getPostUseCase = GetPostUseCase(),
         _status = PostStatus.initial,
         _posts = posts ?? [];
 

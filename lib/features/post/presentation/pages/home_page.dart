@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:volunteer_connection/features/presentation/providers/post/post_provider.dart';
+import 'package:volunteer_connection/features/post/presentation/providers/post/post_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

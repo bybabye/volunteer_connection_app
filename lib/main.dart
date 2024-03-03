@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:volunteer_connection/features/presentation/pages/home_page.dart';
-import 'package:volunteer_connection/features/presentation/providers/post/post_provider.dart';
+import 'package:volunteer_connection/features/post/presentation/pages/home_page.dart';
+import 'package:volunteer_connection/features/post/presentation/providers/post/post_provider.dart';
 
 void main() {
   runApp(const MyApp());
