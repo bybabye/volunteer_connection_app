@@ -21,4 +21,18 @@ class PostRepositoryImpl implements PostRespository {
       return DataFailed(e);
     }
   }
+
+  @override
+  Future<DataState<Post>> createPost(Post p) async {
+    try {
+      final httpResponse = await _postDSI.createPost(p);
+      if (httpResponse.statusCode == 200) {
+        return DataSuccess(httpResponse.data!);
+      } else {
+        return DataFailed(Exception(httpResponse.statusMessage));
+      }
+    } on Exception catch (e) {
+      return DataFailed(e);
+    }
+  }
 }

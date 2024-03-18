@@ -19,4 +19,6 @@ class Post {
       isDeleted: json['isDeleted'] ?? "",
     );
   }
+
+  Map<String, dynamic> toJson() => {'images': images, 'content': content};
 }
