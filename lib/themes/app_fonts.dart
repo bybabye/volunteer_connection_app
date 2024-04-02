@@ -1,3 +1,3 @@
 class Appfont {
-  static const String quicksand = "Quicksand";
+  static const String poppins = "Poppins";
 }

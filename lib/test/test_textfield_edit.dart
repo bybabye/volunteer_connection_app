@@ -10,6 +10,8 @@ class TestTextFieldEdit extends StatefulWidget {
 
 class _TestTextFieldEditState extends State<TestTextFieldEdit> {
   final TextEditingController _controller = TextEditingController();
+
+  int indexSelected = -1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,13 +19,32 @@ class _TestTextFieldEditState extends State<TestTextFieldEdit> {
         title: const Text("TextField Edit"),
       ),
       body: Center(
-        child: CustomTextFieldEdit(
-          height: 40,
-          width: 280,
-          placeHolder: "FullName",
-          controller: _controller,
-        ),
-      ),
+          child: Column(
+        children: [
+          CustomTextField(
+            controller: _controller,
+            index: 0,
+            indexSelected: indexSelected,
+            onTap: () {
+              setState(() {
+                indexSelected = 0;
+              });
+            },
+            isPassword: false,
+          ),
+          CustomTextField(
+            controller: _controller,
+            index: 1,
+            indexSelected: indexSelected,
+            onTap: () {
+              setState(() {
+                indexSelected = 1;
+              });
+            },
+            isPassword: false,
+          ),
+        ],
+      )),
     );
   }
 }
