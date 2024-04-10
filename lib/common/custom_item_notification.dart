@@ -1,3 +1,9 @@
+/// Author : Bùi lê Huy
+/// Date : 26/03/2024
+/// Description : Viết widget cho phần thông báo
+/// Update :
+///
+
 import 'package:flutter/material.dart';
 import 'package:volunteer_connection/common/custom_circle_avatar.dart';
 import 'package:volunteer_connection/themes/app_colors.dart';

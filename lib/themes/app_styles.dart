@@ -12,6 +12,7 @@ class AppStyles {
   );
   static const TextStyle h3 = TextStyle(
     fontSize: 14,
+    fontFamily: Appfont.poppins,
     fontWeight: FontWeight.w700,
   );
   static const TextStyle h4 = TextStyle(

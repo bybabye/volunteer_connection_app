@@ -1,3 +1,9 @@
+/// Author : Bùi lê Huy
+/// Date : 26/03/2024
+/// Description : Viết widget cho avatar
+/// Update :
+///
+
 import 'package:flutter/material.dart';
 
 class CustomCircleAvatar extends StatelessWidget {
