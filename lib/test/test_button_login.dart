@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:volunteer_connection/common/custom_button_auth.dart';
 
-class TestButtonLogin extends StatelessWidget {
-  const TestButtonLogin({required this.nameButton, super.key});
-  final String nameButton;
+class TestButtonLogin extends StatefulWidget {
+  const TestButtonLogin({super.key});
+  @override
+  State<TestButtonLogin> createState() => _TestButtonLoginState();
+}
+
+class _TestButtonLoginState extends State<TestButtonLogin> {
+  late String text;
+  late Color color;
+  late Function action;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -10,23 +18,10 @@ class TestButtonLogin extends StatelessWidget {
         title: const Text("Button"),
       ),
       body: Center(
-        child: SizedBox(
-          height: 40,
-          width: 200,
-          child: ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF335CBE),
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            child: Text(
-              nameButton,
-              textAlign: TextAlign.center,
-            ),
-          ),
+        child: CustomButtonAuth(
+          text: "Login",
+          color: const Color(0xFF335CBE),
+          action: () {},
         ),
       ),
     );

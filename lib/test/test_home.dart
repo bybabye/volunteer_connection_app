@@ -41,9 +41,7 @@ class _TestHomeState extends State<TestHome> {
               onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => const TestButtonLogin(
-                    nameButton: "Login",
-                  ),
+                  builder: (_) => const TestButtonLogin(),
                 ),
               ),
               child: const Text("Test button login"),
