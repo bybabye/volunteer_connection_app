@@ -9,7 +9,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:volunteer_connection/common/custom_background.dart';
 import 'package:volunteer_connection/common/custom_button_auth.dart';
 import 'package:volunteer_connection/common/custom_textfield_auth.dart';
-import 'package:volunteer_connection/themes/app_assets.dart';
 import 'package:volunteer_connection/themes/app_colors.dart';
 import 'package:volunteer_connection/themes/app_styles.dart';
 

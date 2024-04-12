@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:volunteer_connection/features/auth/presentation/pages/login_page.dart';
 
-import 'package:volunteer_connection/features/post/presentation/pages/home_page.dart';
 import 'package:volunteer_connection/features/post/presentation/providers/post_provider.dart';
-import 'package:volunteer_connection/test/test_home.dart';
+import 'package:volunteer_connection/pages/homepage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,7 +28,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const LoginPage(),
+        home: const HomePage(),
       ),
     );
   }

@@ -45,10 +45,11 @@ class _HomePageState extends State<HomePage> {
       return const Text("Lỗi hệ thống");
     } else if (_postProvider.status == PostStatus.success) {
       return ListView.builder(
-          itemCount: _postProvider.post.length,
-          itemBuilder: (_, i) {
-            return Text("${_postProvider.post[i].content}");
-          },);
+        itemCount: _postProvider.post.length,
+        itemBuilder: (_, i) {
+          return Text(_postProvider.post[i].content);
+        },
+      );
     } else {
       return const Text("Warning");
     }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class Appcolors {
   static const backgruondFirstColor = Color(0xFF335CBE);
-  static const backgruondSecondColor = Color(0xFFDFEAFD);
+  static const backgruondSecondColor = Color(0xFFF5F5F5);
   static const mainColor = Color(0xFFE7EBEF);
   static const textColor = Color(0xFF76AAF8);
   static const activeIcon = Color(0xFF76AAF8);
