@@ -14,7 +14,7 @@ class NewFeeds extends StatefulWidget {
 
 class _NewFeedsState extends State<NewFeeds> {
   final String avatar =
-      "https://scontent.fdad3-5.fna.fbcdn.net/v/t1.6435-9/60882175_1292921530883531_6196144495243821056_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=5f2048&_nc_ohc=L-LpPGq31vwAX_tWcRC&_nc_ht=scontent.fdad3-5.fna&oh=00_AfC8A_DUJRVAcysUQOG4rvp4roIO_RIoHlM1H-XKBhWErw&oe=6633D3F1";
+      "https://scontent.fdad3-5.fna.fbcdn.net/v/t1.6435-9/60882175_1292921530883531_6196144495243821056_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=5f2048&_nc_ohc=F2q6gDZMNPwQ7kNvgEvp4Oo&_nc_ht=scontent.fdad3-5.fna&oh=00_AfBsiwlb-Hxzmnp1jUDUjMhghj-TXJLIYjiTtnoIY9GVUw&oe=6662A131";
 
   final text =
       "Công tác tình nguyện viên được thực hiện bởi các cộng tác viên...";
