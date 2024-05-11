@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:volunteer_connection/features/newfeed/presentation/pages/news_feed.dart';
 import 'package:volunteer_connection/features/notification/presentation/pages/notification_page.dart';
 import 'package:volunteer_connection/features/setting/presentation/pages/setting_page.dart';
-import 'package:volunteer_connection/pages/testpage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,7 +15,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   List<Widget> items = [
     const NewFeeds(),
-    const TestPage(),
+    // còn thiếU 1 page
     const NotificationPage(),
     const SettingPage(),
   ];

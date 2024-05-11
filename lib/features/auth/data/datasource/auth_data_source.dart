@@ -20,6 +20,7 @@ class AuthDataSourceImpl implements AuthDataSource {
     required String fullName,
   }) async {
     Response response;
+
     try {
       response = await dio.post("http://10.0.2.2:3001/api/user/sign-up", data: {
         'email': email,
@@ -27,15 +28,6 @@ class AuthDataSourceImpl implements AuthDataSource {
         'phone': phoneNumber,
         'name': fullName,
       });
-      print("$email, $password,$phoneNumber,$fullName,$response");
-
-      // if (response.statusCode != 200) {
-      //   return Response(
-      //     statusCode: response.statusCode,
-      //     data: response.data['message'],
-      //     requestOptions: RequestOptions(),
-      //   );
-      // }
 
       User result =
           User.fromJson(response.data!['data'] as Map<String, dynamic>);
@@ -44,14 +36,22 @@ class AuthDataSourceImpl implements AuthDataSource {
         data: result,
         requestOptions: RequestOptions(),
       );
-    } catch (e) {
-      print(e);
-      return Response(
-        statusCode: 500,
-        statusMessage: e.toString(),
-        data: null,
-        requestOptions: RequestOptions(),
-      );
+    } on DioException catch (e) {
+      if (e.response != null) {
+        return Response(
+          statusCode: e.response!.statusCode,
+          statusMessage: e.response!.data['message'],
+          data: null,
+          requestOptions: RequestOptions(),
+        );
+      } else {
+        return Response(
+          statusCode: 500,
+          statusMessage: e.toString(),
+          data: null,
+          requestOptions: RequestOptions(),
+        );
+      }
     }
   }
 }

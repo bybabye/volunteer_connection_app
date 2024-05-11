@@ -94,12 +94,25 @@ class _RegisterPage extends State<RegisterPage> {
                 setState(() {
                   isLoading = !isLoading;
                 });
-                await _auth.register(_userName.text, _password.text,
-                    _phoneNumber.text, _fullName.text);
-                print("${_userName.text}");
+                String result = await _auth.register(_userName.text,
+                    _password.text, _phoneNumber.text, _fullName.text);
+
                 setState(() {
                   isLoading = !isLoading;
                 });
+                if (result == "success") {
+                  // ignore: use_build_context_synchronously
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(result),
+                    backgroundColor: Colors.green,
+                  ));
+                } else {
+                  // ignore: use_build_context_synchronously
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(result),
+                    backgroundColor: Colors.red,
+                  ));
+                }
               },
             ),
           ),

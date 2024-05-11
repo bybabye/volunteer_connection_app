@@ -11,7 +11,7 @@ class AuthProvider extends ChangeNotifier {
       : _registerUseCase =
             RegisterUseCase(AuthRepositoryImpl(AuthDataSourceImpl()));
 
-  Future<void> register(String email, String password, String phoneNumber,
+  Future<String> register(String email, String password, String phoneNumber,
       String fullName) async {
     try {
       Map<String, dynamic> p = {
@@ -21,14 +21,18 @@ class AuthProvider extends ChangeNotifier {
         'fullName': fullName
       };
       final dataState = await _registerUseCase(p: p);
+
+      if (dataState is DataFailed) {
+        print("data is Failed :  ${dataState.error!.message}");
+        return "${dataState.error!.message}";
+      }
       if (dataState is DataSuccess) {
         print("data is Success : ${dataState.data}");
       }
-      if (dataState is DataFailed) {
-        print("data is Failed : ${dataState.data} ${dataState.error}");
-      }
+      return "success";
     } catch (e) {
       print("data is Exception : ${e.toString()}");
+      return e.toString();
     }
   }
 }

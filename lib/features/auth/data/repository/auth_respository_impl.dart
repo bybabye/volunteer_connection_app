@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:volunteer_connection/core/resources/data_state.dart';
 import 'package:volunteer_connection/features/auth/data/datasource/auth_data_source.dart';
 import 'package:volunteer_connection/features/auth/domain/entities/user.dart';
@@ -19,12 +20,19 @@ class AuthRepositoryImpl implements AuthRepository {
           password: password,
           phoneNumber: phoneNumber,
           fullName: fullName);
+
       if (httpResponse.statusCode == 200) {
         return DataSuccess(httpResponse.data!);
       } else {
-        return DataFailed(Exception(httpResponse.data));
+        return DataFailed(
+          DioException(
+            message: httpResponse.statusMessage,
+            requestOptions: RequestOptions(),
+          ),
+        );
       }
-    } on Exception catch (e) {
+    } on DioException catch (e) {
+      print("vào dòng 28 ở on Exception");
       return DataFailed(e);
     }
   }

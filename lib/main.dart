@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:volunteer_connection/features/auth/presentation/pages/register.dart';
 import 'package:volunteer_connection/features/auth/presentation/providers/auth_provider.dart';
 
-import 'package:volunteer_connection/features/post/presentation/providers/post_provider.dart';
 import 'package:volunteer_connection/pages/homepage.dart';
 
 void main() {
@@ -20,9 +19,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (_) => PostProvider(),
-        ),
         ChangeNotifierProvider(
           create: (_) => AuthProvider(),
         ),
