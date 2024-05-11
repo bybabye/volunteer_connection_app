@@ -6,9 +6,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get_it/get_it.dart';
+import 'package:provider/provider.dart';
 import 'package:volunteer_connection/common/custom_background.dart';
 import 'package:volunteer_connection/common/custom_button_auth.dart';
 import 'package:volunteer_connection/common/custom_textfield_auth.dart';
+import 'package:volunteer_connection/core/routers/navigation_service.dart';
+import 'package:volunteer_connection/core/routers/routes.dart';
+import 'package:volunteer_connection/features/auth/presentation/providers/auth_provider.dart';
 import 'package:volunteer_connection/themes/app_colors.dart';
 import 'package:volunteer_connection/themes/app_styles.dart';
 
@@ -24,11 +29,14 @@ class _LoginPageState extends State<LoginPage> {
   late double width;
   final TextEditingController _userName = TextEditingController();
   final TextEditingController _password = TextEditingController();
-
+  final NavigationService navigationService =
+      GetIt.instance.get<NavigationService>();
+  late AuthProvider _auth;
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
+    _auth = Provider.of<AuthProvider>(context);
 
     return Scaffold(
       body: CustomBackground(widget: _formLogin()),
@@ -82,7 +90,28 @@ class _LoginPageState extends State<LoginPage> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: CustomButtonAuth(width: width, title: "Login", func: () {}),
+            child: CustomButtonAuth(
+                width: width,
+                title: "Login",
+                func: () async {
+                  Map<String, String> result =
+                      await _auth.login(_userName.text, _password.text);
+                  if (result['success'] != null) {
+                    await _auth.getUser(result['success']!);
+                    // ignore: use_build_context_synchronously
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("Success"),
+                      backgroundColor: Colors.green,
+                    ));
+                    navigationService.goToPage(Routes.home);
+                  } else {
+                    // ignore: use_build_context_synchronously
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(result['error'] ?? ""),
+                      backgroundColor: Colors.red,
+                    ));
+                  }
+                }),
           ),
           _lineField(),
           Row(

@@ -32,7 +32,50 @@ class AuthRepositoryImpl implements AuthRepository {
         );
       }
     } on DioException catch (e) {
-      print("vào dòng 28 ở on Exception");
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<String>> login(
+      {required String email, required String password}) async {
+    try {
+      final httpResponse = await _authDSI.login(
+        email: email,
+        password: password,
+      );
+
+      if (httpResponse.statusCode == 200) {
+        return DataSuccess(httpResponse.data!);
+      } else {
+        return DataFailed(
+          DioException(
+            message: httpResponse.statusMessage,
+            requestOptions: RequestOptions(),
+          ),
+        );
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<User>> getUser({required String id}) async {
+    try {
+      final httpResponse = await _authDSI.getUser(id: id);
+
+      if (httpResponse.statusCode == 200) {
+        return DataSuccess(httpResponse.data!);
+      } else {
+        return DataFailed(
+          DioException(
+            message: httpResponse.statusMessage,
+            requestOptions: RequestOptions(),
+          ),
+        );
+      }
+    } on DioException catch (e) {
       return DataFailed(e);
     }
   }

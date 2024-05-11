@@ -8,4 +8,7 @@ abstract class AuthRepository {
     required String phoneNumber,
     required String fullName,
   });
+  Future<DataState<String>> login(
+      {required String email, required String password});
+  Future<DataState<User>> getUser({required String id});
 }
