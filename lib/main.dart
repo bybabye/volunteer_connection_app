@@ -6,6 +6,7 @@ import 'package:volunteer_connection/features/auth/presentation/pages/login_page
 import 'package:volunteer_connection/features/auth/presentation/pages/register.dart';
 
 import 'package:volunteer_connection/features/auth/presentation/providers/auth_provider.dart';
+import 'package:volunteer_connection/features/setting/presentation/pages/profile_page.dart';
 import 'package:volunteer_connection/pages/homepage.dart';
 
 void main() {
@@ -40,7 +41,8 @@ class MyApp extends StatelessWidget {
         routes: {
           Routes.login: (_) => const LoginPage(),
           Routes.register: (_) => const RegisterPage(),
-          Routes.home: (_) => const HomePage()
+          Routes.home: (_) => const HomePage(),
+          Routes.profile: (_) => const ProfilePage()
         },
       ),
     );

@@ -164,22 +164,27 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _richText() {
-    return Center(
-      child: RichText(
-        text: TextSpan(children: [
-          TextSpan(
-            text: "Don't have an account? ",
-            style: AppStyles.h5.copyWith(
-                color: const Color(0xFF597CD2), fontWeight: FontWeight.w400),
-          ),
-          TextSpan(
-            text: "Sign up",
-            style: AppStyles.h5.copyWith(
-              color: Appcolors.backgruondFirstColor,
-              fontWeight: FontWeight.w700,
+    return InkWell(
+      onTap: () {
+        navigationService.goPage(Routes.register);
+      },
+      child: Center(
+        child: RichText(
+          text: TextSpan(children: [
+            TextSpan(
+              text: "Don't have an account? ",
+              style: AppStyles.h5.copyWith(
+                  color: const Color(0xFF597CD2), fontWeight: FontWeight.w400),
             ),
-          ),
-        ]),
+            TextSpan(
+              text: "Sign up",
+              style: AppStyles.h5.copyWith(
+                color: Appcolors.backgruondFirstColor,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ]),
+        ),
       ),
     );
   }
