@@ -1,5 +1,5 @@
 import 'package:volunteer_connection/core/resources/data_state.dart';
-import 'package:volunteer_connection/features/auth/domain/entities/user.dart';
+import 'package:volunteer_connection/core/entites/user.dart';
 
 abstract class AuthRepository {
   Future<DataState<User>> register({

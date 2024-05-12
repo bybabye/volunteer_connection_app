@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:volunteer_connection/core/resources/data_state.dart';
 import 'package:volunteer_connection/features/auth/data/datasource/auth_data_source.dart';
-import 'package:volunteer_connection/features/auth/domain/entities/user.dart';
+import 'package:volunteer_connection/core/entites/user.dart';
 import 'package:volunteer_connection/features/auth/domain/repository/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {

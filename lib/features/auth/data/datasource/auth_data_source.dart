@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:volunteer_connection/config/constanst_config.dart';
-import 'package:volunteer_connection/features/auth/domain/entities/user.dart';
+import 'package:volunteer_connection/core/entites/user.dart';
 
 abstract class AuthDataSource {
   Future<Response<User>> register({

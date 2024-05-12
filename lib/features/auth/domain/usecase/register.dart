@@ -2,7 +2,7 @@ import 'package:volunteer_connection/core/resources/data_state.dart';
 import 'package:volunteer_connection/core/usecase/usecase.dart';
 import 'package:volunteer_connection/features/auth/data/repository/auth_respository_impl.dart';
 
-import '../entities/user.dart';
+import '../../../../core/entites/user.dart';
 
 class RegisterUseCase
     implements UseCase<DataState<User>, Map<String, dynamic>> {

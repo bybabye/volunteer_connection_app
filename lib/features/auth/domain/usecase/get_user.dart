@@ -1,7 +1,7 @@
 import 'package:volunteer_connection/core/resources/data_state.dart';
 import 'package:volunteer_connection/core/usecase/usecase.dart';
 import 'package:volunteer_connection/features/auth/data/repository/auth_respository_impl.dart';
-import 'package:volunteer_connection/features/auth/domain/entities/user.dart';
+import 'package:volunteer_connection/core/entites/user.dart';
 
 class GetUserUseCase implements UseCase<DataState<User>, String> {
   final AuthRepositoryImpl _authRI;

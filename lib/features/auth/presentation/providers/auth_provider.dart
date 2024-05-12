@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:volunteer_connection/core/resources/data_state.dart';
 import 'package:volunteer_connection/features/auth/data/datasource/auth_data_source.dart';
 import 'package:volunteer_connection/features/auth/data/repository/auth_respository_impl.dart';
-import 'package:volunteer_connection/features/auth/domain/entities/user.dart';
+import 'package:volunteer_connection/core/entites/user.dart';
 import 'package:volunteer_connection/features/auth/domain/usecase/get_user.dart';
 import 'package:volunteer_connection/features/auth/domain/usecase/login.dart';
 import 'package:volunteer_connection/features/auth/domain/usecase/register.dart';
