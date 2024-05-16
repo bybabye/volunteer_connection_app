@@ -102,14 +102,14 @@ class _RegisterPage extends State<RegisterPage> {
                 });
                 if (result == "success") {
                   // ignore: use_build_context_synchronously
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(result),
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text('Đăng kí thành công'),
                     backgroundColor: Colors.green,
                   ));
                 } else {
                   // ignore: use_build_context_synchronously
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(result),
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text('Lỗi'),
                     backgroundColor: Colors.red,
                   ));
                 }
