@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:volunteer_connection/common/custom_background.dart';
 import 'package:volunteer_connection/common/custom_button_auth.dart';
 import 'package:volunteer_connection/common/custom_textfield_auth.dart';
+import 'package:volunteer_connection/features/auth/presentation/providers/auth_provider.dart';
 // import 'package:volunteer_connection/themes/app_colors.dart';
 // import 'package:volunteer_connection/themes/app_styles.dart';
 
@@ -20,14 +22,21 @@ class _RegisterPage extends State<RegisterPage> {
   final TextEditingController _password = TextEditingController();
   final TextEditingController _phoneNumber = TextEditingController();
   final TextEditingController _fullName = TextEditingController();
+  late AuthProvider _auth;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
+    _auth = Provider.of<AuthProvider>(context);
 
     return Scaffold(
-      body: CustomBackground(widget: _formRegister()),
+      body: isLoading
+          ? const CustomBackground(
+              widget: CircularProgressIndicator(),
+            )
+          : CustomBackground(widget: _formRegister()),
     );
   }
 
@@ -66,19 +75,46 @@ class _RegisterPage extends State<RegisterPage> {
           CustomTextFieldAuth(
             controller: _phoneNumber,
             hintText: "",
-            isPassword: true,
+            isPassword: false,
             title: "Phone Number",
           ),
           CustomTextFieldAuth(
             controller: _fullName,
             hintText: "",
-            isPassword: true,
+            isPassword: false,
             title: "Full Name",
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child:
-                CustomButtonAuth(width: width, title: "Sign up", func: () {}),
+            child: CustomButtonAuth(
+              width: width,
+              title: "Sign up",
+              func: () async {
+                print("alo");
+                setState(() {
+                  isLoading = !isLoading;
+                });
+                String result = await _auth.register(_userName.text,
+                    _password.text, _phoneNumber.text, _fullName.text);
+
+                setState(() {
+                  isLoading = !isLoading;
+                });
+                if (result == "success") {
+                  // ignore: use_build_context_synchronously
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(result),
+                    backgroundColor: Colors.green,
+                  ));
+                } else {
+                  // ignore: use_build_context_synchronously
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(result),
+                    backgroundColor: Colors.red,
+                  ));
+                }
+              },
+            ),
           ),
         ],
       ),
