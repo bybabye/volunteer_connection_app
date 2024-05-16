@@ -32,6 +32,7 @@ class _LoginPageState extends State<LoginPage> {
   final NavigationService navigationService =
       GetIt.instance.get<NavigationService>();
   late AuthProvider _auth;
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
@@ -39,7 +40,8 @@ class _LoginPageState extends State<LoginPage> {
     _auth = Provider.of<AuthProvider>(context);
 
     return Scaffold(
-      body: CustomBackground(widget: _formLogin()),
+      body: CustomBackground(
+          widget: isLoading ? const CircularProgressIndicator() : _formLogin()),
     );
   }
 
@@ -94,6 +96,9 @@ class _LoginPageState extends State<LoginPage> {
                 width: width,
                 title: "Login",
                 func: () async {
+                  setState(() {
+                    isLoading = !isLoading;
+                  });
                   Map<String, String> result =
                       await _auth.login(_userName.text, _password.text);
                   if (result['success'] != null) {
@@ -111,6 +116,9 @@ class _LoginPageState extends State<LoginPage> {
                       backgroundColor: Colors.red,
                     ));
                   }
+                  setState(() {
+                    isLoading = !isLoading;
+                  });
                 }),
           ),
           _lineField(),

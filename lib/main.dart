@@ -6,6 +6,7 @@ import 'package:volunteer_connection/features/auth/presentation/pages/login_page
 import 'package:volunteer_connection/features/auth/presentation/pages/register.dart';
 
 import 'package:volunteer_connection/features/auth/presentation/providers/auth_provider.dart';
+import 'package:volunteer_connection/features/chat/presetation/page/chat_page.dart';
 import 'package:volunteer_connection/features/setting/presentation/pages/profile_page.dart';
 import 'package:volunteer_connection/pages/homepage.dart';
 
@@ -36,8 +37,8 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        initialRoute: Routes.login,
         navigatorKey: locator<NavigationService>().navigatorKey,
+        initialRoute: Routes.login,
         routes: {
           Routes.login: (_) => const LoginPage(),
           Routes.register: (_) => const RegisterPage(),
