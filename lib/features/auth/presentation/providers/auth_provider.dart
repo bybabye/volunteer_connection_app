@@ -6,11 +6,13 @@ import 'package:volunteer_connection/core/entites/user.dart';
 import 'package:volunteer_connection/features/auth/domain/usecase/get_user.dart';
 import 'package:volunteer_connection/features/auth/domain/usecase/login.dart';
 import 'package:volunteer_connection/features/auth/domain/usecase/register.dart';
+import 'package:volunteer_connection/features/auth/domain/usecase/update_user.dart';
 
 class AuthProvider extends ChangeNotifier {
   final RegisterUseCase _registerUseCase;
   final LoginUseCase _loginUseCase;
   final GetUserUseCase _getUserUseCase;
+  final UpdateUserUseCase _updateUserUseCase;
   late User user;
 
   AuthProvider()
@@ -18,7 +20,9 @@ class AuthProvider extends ChangeNotifier {
             RegisterUseCase(AuthRepositoryImpl(AuthDataSourceImpl())),
         _getUserUseCase =
             GetUserUseCase(AuthRepositoryImpl(AuthDataSourceImpl())),
-        _loginUseCase = LoginUseCase(AuthRepositoryImpl(AuthDataSourceImpl()));
+        _loginUseCase = LoginUseCase(AuthRepositoryImpl(AuthDataSourceImpl())),
+        _updateUserUseCase =
+            UpdateUserUseCase(AuthRepositoryImpl(AuthDataSourceImpl()));
 
   Future<String> register(String email, String password, String phoneNumber,
       String fullName) async {
@@ -78,6 +82,48 @@ class AuthProvider extends ChangeNotifier {
       }
     } catch (e) {
       print(e);
+    }
+  }
+
+  Future<String> updateUser(String id, String userName, String email,
+      String phone, String placeOfOrigin) async {
+    try {
+      // Construct parameters map
+      Map<String, String> p = {
+        'id': id,
+        'userName': userName,
+        'email': email,
+        'phone': phone,
+        'placeOfOrigin': placeOfOrigin
+      };
+      print("Update parameters: $p");
+
+      // Call the update user use case
+      final dataState = await _updateUserUseCase(p: p);
+      if (dataState is DataFailed) {
+        print("Data update failed: ${dataState.error?.message}");
+        return dataState.error?.message ?? "Unknown error";
+      }
+      if (dataState is DataSuccess) {
+        // Assuming dataState.data contains the updated user information
+        print("Data update succeeded: ${dataState.data}");
+
+        // Update the AuthProvider's user object using copyWith
+        user = user.copyWith(
+          name: userName,
+          email: email,
+          phone: phone,
+          placeOfOrigin: placeOfOrigin,
+        );
+
+        // Notify listeners of the change
+        notifyListeners();
+        return "success";
+      }
+      return "Unknown state";
+    } catch (e) {
+      print("Exception during data update: ${e.toString()}");
+      return e.toString();
     }
   }
 }

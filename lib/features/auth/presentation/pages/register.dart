@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:get_it/get_it.dart';
+import 'package:volunteer_connection/core/routers/navigation_service.dart';
+import 'package:volunteer_connection/core/routers/routes.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:volunteer_connection/common/custom_background.dart';
 import 'package:volunteer_connection/common/custom_button_auth.dart';
@@ -22,6 +25,8 @@ class _RegisterPage extends State<RegisterPage> {
   final TextEditingController _password = TextEditingController();
   final TextEditingController _phoneNumber = TextEditingController();
   final TextEditingController _fullName = TextEditingController();
+  final NavigationService navigationService =
+      GetIt.instance.get<NavigationService>();
   late AuthProvider _auth;
   bool isLoading = false;
 
@@ -102,10 +107,13 @@ class _RegisterPage extends State<RegisterPage> {
                 });
                 if (result == "success") {
                   // ignore: use_build_context_synchronously
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text('Đăng kí thành công'),
-                    backgroundColor: Colors.green,
-                  ));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Đăng kí thành công'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                  navigationService.goToPage(Routes.login);
                 } else {
                   // ignore: use_build_context_synchronously
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
