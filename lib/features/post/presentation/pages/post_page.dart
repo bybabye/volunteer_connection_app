@@ -1,7 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobkit_dashed_border/mobkit_dashed_border.dart';
+import 'package:volunteer_connection/config/app_colors.dart';
+import 'package:volunteer_connection/features/post/location_handler.dart';
+import 'package:volunteer_connection/themes/app_colors.dart';
 
 class PostPage extends StatefulWidget {
   const PostPage({super.key});
@@ -13,15 +18,18 @@ class PostPage extends StatefulWidget {
 class _PostPageState extends State<PostPage> {
   TextEditingController contentController = TextEditingController();
   TextEditingController organizationController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+
+  String city = 'Quảng Trị';
   final ImagePicker imagePicker = ImagePicker();
   List<XFile> imageFileList = [];
 
   @override
   void initState() {
+    // _getCurrentPosition();
     super.initState();
   }
 
-  // Select image v1
   // void selectedImage() async {
   //   List<XFile> selectedImage = await imagePicker.pickMultiImage(
   //     imageQuality: 60, // Có thể điều chỉnh chất lượng ảnh
@@ -39,14 +47,16 @@ class _PostPageState extends State<PostPage> {
   //   setState(() {});
   // }
 
-  // Select image v2
   void selectedImage() async {
     List<XFile> selectedImage = await imagePicker.pickMultiImage(
       imageQuality: 60, // Có thể điều chỉnh chất lượng ảnh
     );
-    if ((imageFileList.length + selectedImage.length) <= 5) {
+
+    if (selectedImage != null &&
+        (imageFileList.length + selectedImage.length) <= 5) {
       imageFileList.addAll(selectedImage);
-    } else if ((imageFileList.length + selectedImage.length) > 5) {
+    } else if (selectedImage != null &&
+        (imageFileList.length + selectedImage.length) > 5) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           backgroundColor: Colors.blue,
@@ -66,9 +76,11 @@ class _PostPageState extends State<PostPage> {
   void logData() {
     print('Nội dung bài viết: ${contentController.text}');
     print('Tổ chức: ${organizationController.text}');
+
     // print('Địa chỉ : ${city}');
     print('path ảnh gồm :');
     print('----------------------------------------');
+
     imageFileList.forEach((element) {
       print(element.path);
     });
@@ -93,10 +105,9 @@ class _PostPageState extends State<PostPage> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(12),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            // Noi dung post
             TextField(
               controller: contentController,
               autocorrect: false,
@@ -114,11 +125,65 @@ class _PostPageState extends State<PostPage> {
             const SizedBox(
               height: 20,
             ),
-            // GET LOCATION
+            Form(
+              child: TextFormField(
+                controller: addressController,
+                onChanged: (value) {},
+                textInputAction: TextInputAction.search,
+                decoration: InputDecoration(
+                    prefixIcon: const Icon(
+                      Icons.location_on_outlined,
+                      color: Colors.red,
+                    ),
+                    hintText: "Vị trí của bạn",
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey.withOpacity(0.2)),
+              ),
+            ),
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: ElevatedButton.icon(
+                    onPressed: () async {
+                      Position? currentPosition =
+                          await LocationHandler.getCurrentPosition();
+                      String? currentAddress =
+                          await LocationHandler.getAddressFromLatLng(
+                              currentPosition!);
+                      setState(() {
+                        addressController.text =
+                            currentAddress ?? "Unknown Address";
+                      });
+                      // setState(() {});
+                      // print(currentPosition);
+                      print(currentAddress);
+                    },
+                    icon: SvgPicture.asset(
+                      "assets/icons/cursor_arrow.svg",
+                      height: 16,
+                    ),
+                    label: const Text("Sử dụng vị trí hiện tại"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.grey_F4F7FA,
+                      foregroundColor: AppColors.black_33383C,
+                      elevation: 0,
+                      fixedSize: const Size(double.maxFinite, 40),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(
               height: 20,
             ),
-            // Ten to chuc thien nguyen
             SizedBox(
               height: 50,
               child: TextField(
@@ -142,7 +207,11 @@ class _PostPageState extends State<PostPage> {
             const SizedBox(
               height: 20,
             ),
-            // Image of post
+            const Divider(
+              height: 4,
+              thickness: 4,
+              color: Appcolors.backgruondSecondColor,
+            ),
             SizedBox(
               height: 300,
               child: GridView.builder(

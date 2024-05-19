@@ -33,7 +33,7 @@ class AuthDataSourceImpl implements AuthDataSource {
     Response response;
 
     try {
-      response = await dio.post(ConstanstConfig.signIn1, data: {
+      response = await dio.post(ConstanstConfig.signIn, data: {
         'email': email,
         'password': password,
         'phone': phoneNumber,
@@ -71,7 +71,7 @@ class AuthDataSourceImpl implements AuthDataSource {
       {required String email, required String password}) async {
     Response response;
     try {
-      response = await dio.post(ConstanstConfig.login1, data: {
+      response = await dio.post(ConstanstConfig.login, data: {
         'email': email,
         'password': password,
       });
@@ -104,7 +104,7 @@ class AuthDataSourceImpl implements AuthDataSource {
   Future<Response<User>> getUser({required String id}) async {
     Response response;
     try {
-      response = await dio.get("${ConstanstConfig.getUser1}/$id");
+      response = await dio.get("${ConstanstConfig.getUser}/$id");
       User result =
           User.fromJson(response.data!['data'] as Map<String, dynamic>);
       return Response(
@@ -140,7 +140,7 @@ class AuthDataSourceImpl implements AuthDataSource {
       required String placeOfOrigin}) async {
     Response response;
     try {
-      response = await dio.put("${ConstanstConfig.updateUser1}/$id", data: {
+      response = await dio.put("${ConstanstConfig.updateUser}/$id", data: {
         'name': userName,
         'email': email,
         'phone': phone,
