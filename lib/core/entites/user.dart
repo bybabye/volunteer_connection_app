@@ -8,7 +8,9 @@ class User {
   final String avatar;
   final String blood;
   final String phone;
+
   final String placeOfOrigin;
+
 
   User({
     required this.id,

@@ -6,7 +6,8 @@ import 'package:volunteer_connection/features/auth/presentation/pages/login_page
 import 'package:volunteer_connection/features/auth/presentation/pages/register.dart';
 
 import 'package:volunteer_connection/features/auth/presentation/providers/auth_provider.dart';
-import 'package:volunteer_connection/features/chat/presetation/page/chat_page.dart';
+
+import 'package:volunteer_connection/features/chat/presetation/providers/chat_provider.dart';
 import 'package:volunteer_connection/features/setting/presentation/pages/profile_page.dart';
 import 'package:volunteer_connection/pages/homepage.dart';
 
@@ -28,6 +29,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (_) => AuthProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ChatProvider(),
         ),
       ],
       child: MaterialApp(
