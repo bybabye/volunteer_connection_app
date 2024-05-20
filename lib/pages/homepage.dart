@@ -2,7 +2,7 @@ import 'package:dot_navigation_bar/dot_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:volunteer_connection/features/chat/presetation/page/chat_page.dart';
 
-import 'package:volunteer_connection/features/newfeed/presentation/pages/news_feed.dart';
+import 'package:volunteer_connection/features/post/presentation/pages/news_feed.dart';
 import 'package:volunteer_connection/features/notification/presentation/pages/notification_page.dart';
 import 'package:volunteer_connection/features/setting/presentation/pages/setting_page.dart';
 

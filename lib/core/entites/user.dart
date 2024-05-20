@@ -7,7 +7,7 @@ class User {
 
   final String avatar;
   final String blood;
-  final int phone;
+  final String phone;
 
   User({
     required this.id,

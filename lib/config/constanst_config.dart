@@ -3,4 +3,8 @@ class ConstanstConfig {
   static String signIn = "$localhost/api/user/sign-up";
   static String login = "$localhost/api/user/sign-in";
   static String getUser = "$localhost/api/user/get-details";
+  //chat
+  static String getChat = "$localhost/api/chat/get-user-chats";
+  //message
+  static String getMess = "$localhost/api/message/get-message";
 }
