@@ -11,4 +11,10 @@ abstract class AuthRepository {
   Future<DataState<String>> login(
       {required String email, required String password});
   Future<DataState<User>> getUser({required String id});
+  Future<DataState<User>> updateUser(
+      {required String id,
+      required String userName,
+      required String email,
+      required String phone,
+      required String placeOfOrigin});
 }

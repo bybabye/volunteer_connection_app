@@ -9,6 +9,9 @@ class User {
   final String blood;
   final String phone;
 
+  final String placeOfOrigin;
+
+
   User({
     required this.id,
     required this.name,
@@ -17,6 +20,7 @@ class User {
     required this.avatar,
     required this.blood,
     required this.phone,
+    required this.placeOfOrigin,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -28,6 +32,25 @@ class User {
       avatar: json['avatar'] ?? "",
       blood: json['blood'] ?? "",
       phone: json['phone'] ?? "",
+      placeOfOrigin: json['placeOfOrigin'] ?? "",
+    );
+  }
+
+  User copyWith({
+    String? name,
+    String? email,
+    String? phone,
+    String? placeOfOrigin,
+  }) {
+    return User(
+      id: this.id,
+      roles: this.roles,
+      avatar: this.avatar,
+      blood: this.blood,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      phone: phone ?? this.phone,
+      placeOfOrigin: placeOfOrigin ?? this.placeOfOrigin,
     );
   }
 }

@@ -64,6 +64,35 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<DataState<User>> getUser({required String id}) async {
     try {
       final httpResponse = await _authDSI.getUser(id: id);
+      if (httpResponse.statusCode == 200) {
+        return DataSuccess(httpResponse.data!);
+      } else {
+        return DataFailed(
+          DioException(
+            message: httpResponse.statusMessage,
+            requestOptions: RequestOptions(),
+          ),
+        );
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<User>> updateUser(
+      {required String id,
+      required String userName,
+      required String email,
+      required String phone,
+      required String placeOfOrigin}) async {
+    try {
+      final httpResponse = await _authDSI.updateUser(
+          id: id,
+          userName: userName,
+          email: email,
+          phone: phone,
+          placeOfOrigin: placeOfOrigin);
 
       if (httpResponse.statusCode == 200) {
         return DataSuccess(httpResponse.data!);
