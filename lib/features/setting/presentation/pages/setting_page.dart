@@ -5,6 +5,9 @@ import 'package:volunteer_connection/core/routers/navigation_service.dart';
 import 'package:volunteer_connection/core/routers/routes.dart';
 import 'package:volunteer_connection/themes/app_colors.dart';
 import 'package:volunteer_connection/themes/app_styles.dart';
+import 'package:volunteer_connection/config/constanst_config.dart';
+import 'package:volunteer_connection/core/routers/navigation_service.dart';
+import 'package:http/http.dart' as http;
 
 class SettingPage extends StatefulWidget {
   const SettingPage({super.key});
@@ -38,7 +41,7 @@ class _SettingPageState extends State<SettingPage> {
                   },
               "Chỉnh sửa thông tin cá nhân"),
           const Spacer(),
-          _customButtonLogout(),
+          _customButtonLogout(context),
           const SizedBox(
             height: 80,
           ),
@@ -118,21 +121,64 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
-  Widget _customButtonLogout() {
-    return Container(
-      height: 46,
-      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        color: const Color(0xFFE5E5E5),
-      ),
-      child: const Center(
-        child: Text(
-          "Đăng xuất",
-          style: AppStyles.h3,
+//   Widget _customButtonLogout() {
+//     return Container(
+//       height: 46,
+//       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+//       padding: const EdgeInsets.all(8),
+//       decoration: BoxDecoration(
+//         borderRadius: BorderRadius.circular(8),
+//         color: const Color(0xFFE5E5E5),
+//       ),
+//       child: const Center(
+//         child: Text(
+//           "Đăng xuất",
+//           style: AppStyles.h3,
+//         ),
+//       ),
+//     );
+//   }
+// }
+  Widget _customButtonLogout(BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        await logout();
+      },
+      child: Container(
+        height: 46,
+        margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: const Color(0xFFE5E5E5),
+        ),
+        child: const Center(
+          child: Text(
+            "Đăng xuất",
+            style: AppStyles.h3,
+          ),
         ),
       ),
     );
+  }
+
+  Future<void> logout() async {
+    final url = Uri.parse(ConstanstConfig.logout);
+
+    try {
+      final response = await http.post(url);
+
+      if (response.statusCode == 200) {
+        navigationService.goToPage(Routes.login);
+        // Handle successful logout
+        print("Logout successful");
+      } else {
+        // Handle unsuccessful logout
+        print("Failed to logout: ${response.statusCode}");
+      }
+    } catch (e) {
+      // Handle errors
+      print("Error during logout: $e");
+    }
   }
 }
