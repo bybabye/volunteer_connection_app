@@ -8,6 +8,10 @@ class ConstanstConfig {
   static String getUser = "$localhost/api/user/get-details";
   // static String getUser1 = "$production/api/user/get-details";
 
+  static String updateUser = "$localhost/api/user/update-user";
+  // static String updateUser1 = "$production/api/user/update-user";
+
+
   //chat
   static String getChat = "$localhost/api/chat/get-user-chats";
   //message
@@ -16,4 +20,5 @@ class ConstanstConfig {
   // static String updateUser1 = "$production/api/user/update-user";
   static String updateUser = "$localhost/api/user/update-user";
   static String logout = "$localhost/api/user/log-out";
+
 }
