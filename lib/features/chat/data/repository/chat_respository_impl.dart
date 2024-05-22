@@ -49,4 +49,24 @@ class ChatRespositoryImpl implements ChatRepository {
       return DataFailed(e);
     }
   }
+
+  @override
+  Future<DataState<String>> createMessage({required Message message}) async {
+    try {
+      final httpResponse = await _chatDSI.createMessage(message: message);
+
+      if (httpResponse.statusCode == 200) {
+        return DataSuccess(httpResponse.data!);
+      } else {
+        return DataFailed(
+          DioException(
+            message: httpResponse.statusMessage,
+            requestOptions: RequestOptions(),
+          ),
+        );
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
 }

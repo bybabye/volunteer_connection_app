@@ -6,6 +6,7 @@ import 'package:volunteer_connection/features/chat/domain/entity/message.dart';
 abstract class ChatDataSource {
   Future<Response<List<Chat>>> getListChatForId({required String id});
   Future<Response<List<Message>>> getListMessForId({required String id});
+  Future<Response<String>> createMessage({required Message message});
 }
 
 class ChatDataSourceImpl implements ChatDataSource {
@@ -74,6 +75,40 @@ class ChatDataSourceImpl implements ChatDataSource {
       );
     } on DioException catch (e) {
       print(e);
+      if (e.response != null) {
+        return Response(
+          statusCode: e.response!.statusCode,
+          statusMessage: e.response!.data['message']['message'],
+          data: null,
+          requestOptions: RequestOptions(),
+        );
+      } else {
+        return Response(
+          statusCode: 500,
+          statusMessage: e.toString(),
+          data: null,
+          requestOptions: RequestOptions(),
+        );
+      }
+    }
+  }
+
+  @override
+  Future<Response<String>> createMessage({required Message message}) async {
+    print("${ConstanstConfig.createMess}/${message.chatId}");
+    try {
+      await dio.post(ConstanstConfig.createMess, data: {
+        'type': message.type,
+        'content': message.content,
+        'chatId': message.chatId,
+        'senderId': message.sender.id
+      });
+      return Response(
+        statusCode: 200,
+        data: "success",
+        requestOptions: RequestOptions(),
+      );
+    } on DioException catch (e) {
       if (e.response != null) {
         return Response(
           statusCode: e.response!.statusCode,
