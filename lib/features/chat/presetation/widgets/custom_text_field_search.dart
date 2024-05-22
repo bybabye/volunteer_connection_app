@@ -14,7 +14,7 @@ class CustomTextFieldSearch extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(8),
       margin: const EdgeInsets.symmetric(vertical: 12),
-      height: 45,
+      height: 35,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
         color: const Color(0xFFEFEFEF),

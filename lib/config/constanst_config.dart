@@ -15,8 +15,9 @@ class ConstanstConfig {
   static String getChat = "$localhost/api/chat/get-user-chats";
   //message
   static String getMess = "$localhost/api/message/get-message";
+  static String createMess = "$localhost/api/message/create-message";
 
   // static String updateUser1 = "$production/api/user/update-user";
-
+  static String postImage = "$localhost/api/post/upload/";
   static String logout = "$localhost/api/user/log-out";
 }
