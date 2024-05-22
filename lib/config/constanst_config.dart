@@ -9,4 +9,8 @@ class ConstanstConfig {
   // static String getUser1 = "$production/api/user/get-details";
   static String updateUser = "$localhost/api/user/update-user";
   // static String updateUser1 = "$production/api/user/update-user";
+  static String createPost = "$localhost/api/post/add-post";
+  // static String createPost1 = "$production/api/post/add-post";
+  static String review = "$localhost/api/post/review-post";
+  // static String review1 = "$production/api/post/review-post";
 }

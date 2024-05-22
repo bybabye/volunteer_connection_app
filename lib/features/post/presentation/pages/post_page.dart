@@ -7,6 +7,9 @@ import 'package:mobkit_dashed_border/mobkit_dashed_border.dart';
 import 'package:volunteer_connection/config/app_colors.dart';
 import 'package:volunteer_connection/features/post/location_handler.dart';
 import 'package:volunteer_connection/themes/app_colors.dart';
+import 'package:http/http.dart' as http;
+import "dart:convert";
+import 'package:volunteer_connection/config/constanst_config.dart';
 
 class PostPage extends StatefulWidget {
   const PostPage({super.key});
@@ -87,14 +90,82 @@ class _PostPageState extends State<PostPage> {
     print('----------------------------------------');
   }
 
+  Future<String> _handlePostCreation(
+      String title, String location, List<String> description) async {
+    // Dữ liệu cho post
+    final Map<String, dynamic> postData = {
+      'title': title,
+      'location': location,
+      'description': description,
+    };
+    final url1 = Uri.parse(ConstanstConfig.createPost);
+    // final url2 = Uri.parse(ConstanstConfig.review1);
+
+    try {
+      // Gửi yêu cầu POST để tạo bài viết
+      final response = await http.post(
+        url1,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(postData),
+      );
+
+      if (response.statusCode == 200) {
+        final responseBody = jsonDecode(response.body);
+        print(responseBody['data']);
+        final String postId = responseBody['data']['_id'];
+        print(postId);
+
+        // Gọi API để review post
+        final reviewResponse = await http.put(
+          Uri.parse('${ConstanstConfig.review}/$postId'),
+        );
+
+        if (reviewResponse.statusCode == 200) {
+          print("ok api review");
+          return "success";
+          // Thành công
+          // print('Đăng bài ok');
+        } else {
+          // Xử lý lỗi khi review post không thành công
+          print('Review post failed: ${reviewResponse.statusCode}');
+        }
+      } else {
+        // Xử lý lỗi khi tạo post không thành công
+        print('Create post failed: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Xử lý lỗi khi có ngoại lệ
+      print('Error: $e');
+    }
+    return "";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
           GestureDetector(
-            onTap: () {
-              logData();
+            onTap: () async {
+              // logData();
+              final result = await _handlePostCreation(
+                  "abc", addressController.text, [contentController.text]);
+              if (result == "success") {
+                // Dang bai thanh cong thi get thong tin show o newfeed
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Đăng bài thành công'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Nội dung bài đăng không hợp lệ!'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
             },
             child: const Text(
               'Đăng bài',
