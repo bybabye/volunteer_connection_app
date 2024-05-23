@@ -4,12 +4,12 @@ import 'package:volunteer_connection/core/routers/navigation_service.dart';
 import 'package:volunteer_connection/core/routers/routes.dart';
 import 'package:volunteer_connection/features/auth/presentation/pages/login_page.dart';
 import 'package:volunteer_connection/features/auth/presentation/pages/register.dart';
-
 import 'package:volunteer_connection/features/auth/presentation/providers/auth_provider.dart';
-
 import 'package:volunteer_connection/features/chat/presetation/providers/chat_provider.dart';
+import 'package:volunteer_connection/features/chat/presetation/providers/socket_provider.dart';
 import 'package:volunteer_connection/features/setting/presentation/pages/profile_page.dart';
 import 'package:volunteer_connection/pages/homepage.dart';
+import 'package:volunteer_connection/pages/test_image.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +28,9 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
+          create: (_) => SocketIOProvider(),
+        ),
+        ChangeNotifierProvider(
           create: (_) => AuthProvider(),
         ),
         ChangeNotifierProvider(
@@ -44,6 +47,7 @@ class MyApp extends StatelessWidget {
         navigatorKey: locator<NavigationService>().navigatorKey,
         initialRoute: Routes.login,
         routes: {
+          "test": (_) => const TestImage(),
           Routes.login: (_) => const LoginPage(),
           Routes.register: (_) => const RegisterPage(),
           Routes.home: (_) => const HomePage(),
