@@ -16,6 +16,7 @@ import 'package:volunteer_connection/core/routers/routes.dart';
 import 'package:volunteer_connection/features/auth/presentation/providers/auth_provider.dart';
 import 'package:volunteer_connection/themes/app_colors.dart';
 import 'package:volunteer_connection/themes/app_styles.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -33,6 +34,11 @@ class _LoginPageState extends State<LoginPage> {
       GetIt.instance.get<NavigationService>();
   late AuthProvider _auth;
   bool isLoading = false;
+  void saveNameToLocal(String name) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('nameLocal', name);
+  }
+
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
@@ -103,6 +109,8 @@ class _LoginPageState extends State<LoginPage> {
                       await _auth.login(_userName.text, _password.text);
                   if (result['success'] != null) {
                     await _auth.getUser(result['success']!);
+                    String nameLocal = _auth.user.name.toString();
+                    saveNameToLocal(nameLocal);
                     // ignore: use_build_context_synchronously
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       content: Text("Success"),

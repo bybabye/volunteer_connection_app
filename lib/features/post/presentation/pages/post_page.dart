@@ -7,6 +7,10 @@ import 'package:mobkit_dashed_border/mobkit_dashed_border.dart';
 import 'package:volunteer_connection/config/app_colors.dart';
 import 'package:volunteer_connection/features/post/location_handler.dart';
 import 'package:volunteer_connection/themes/app_colors.dart';
+import 'package:http/http.dart' as http;
+import "dart:convert";
+import 'package:volunteer_connection/config/constanst_config.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PostPage extends StatefulWidget {
   const PostPage({super.key});
@@ -29,23 +33,6 @@ class _PostPageState extends State<PostPage> {
     // _getCurrentPosition();
     super.initState();
   }
-
-  // void selectedImage() async {
-  //   List<XFile> selectedImage = await imagePicker.pickMultiImage(
-  //     imageQuality: 60, // Có thể điều chỉnh chất lượng ảnh
-  //   );
-  //   if (imageFileList != null && imageFileList.length <= 5) {
-  //     imageFileList.addAll(selectedImage);
-  //   } else if (imageFileList != null && imageFileList.length > 5) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       const SnackBar(
-  //         backgroundColor: Colors.blue,
-  //         content: Text('Chọn tối đa 5 ảnh !'),
-  //       ),
-  //     );
-  //   }
-  //   setState(() {});
-  // }
 
   void selectedImage() async {
     List<XFile> selectedImage = await imagePicker.pickMultiImage(
@@ -87,14 +74,120 @@ class _PostPageState extends State<PostPage> {
     print('----------------------------------------');
   }
 
+  Future<String?> getNameFromLocal() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('nameLocal');
+  }
+
+  Future<String?> fetchData() async {
+    try {
+      String? name = await getNameFromLocal();
+      return name;
+    } catch (e) {
+      print('Error retrieving name from local storage: $e');
+      return null; // Return null if there's an error
+    }
+  }
+
+  /* URL ẢNH 
+  - tất cả file ảnh được chọn sẽ lưu ở imageFileList
+  - sau khi upload ảnh trả vể url thì bổ sung thêm ở dòng 113, thêm trường image chứa url của ảnh theo dạng sau 
+  "images": [
+        {
+            "src": "https://example.com/image1.jpg",
+            "width": 800,
+            "height": 600
+        },
+        {
+            "src": "https://example.com/image2.jpg",
+            "width": 800,
+            "height": 600
+        }
+    ]
+  - tới dòng 169 thêm image để gọi hàm
+
+  */
+  Future<String> _handlePostCreation(
+      String title, String location, List<String> description) async {
+    // Dữ liệu cho post
+    final Map<String, dynamic> postData = {
+      'title': title,
+      'location': location,
+      'description': description,
+    };
+    final url1 = Uri.parse(ConstanstConfig.createPost);
+    // final url2 = Uri.parse(ConstanstConfig.review1);
+
+    try {
+      // Gửi yêu cầu POST để tạo bài viết
+      final response = await http.post(
+        url1,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(postData),
+      );
+
+      if (response.statusCode == 200) {
+        final responseBody = jsonDecode(response.body);
+        print(responseBody['data']);
+        final String postId = responseBody['data']['_id'];
+        print(postId);
+
+        // Gọi API để review post
+        final reviewResponse = await http.put(
+          Uri.parse('${ConstanstConfig.review}/$postId'),
+        );
+
+        if (reviewResponse.statusCode == 200) {
+          print("ok api review");
+          return "success";
+          // Thành công
+          // print('Đăng bài ok');
+        } else {
+          // Xử lý lỗi khi review post không thành công
+          print('Review post failed: ${reviewResponse.statusCode}');
+        }
+      } else {
+        // Xử lý lỗi khi tạo post không thành công
+        print('Create post failed: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Xử lý lỗi khi có ngoại lệ
+      print('Error: $e');
+    }
+    return "";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
           GestureDetector(
-            onTap: () {
-              logData();
+            onTap: () async {
+              // logData();
+              // THÊM THAM SỐ IMAGE VÀO _handlePostCreation
+              final result = await _handlePostCreation(
+                  // "abc", addressController.text, [contentController.text]);
+                  organizationController.text,
+                  addressController.text,
+                  [contentController.text]);
+              print(result);
+              if (result == "success") {
+                // Dang bai thanh cong thi get thong tin show o newfeed
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Đăng bài thành công'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Nội dung bài đăng không hợp lệ!'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
             },
             child: const Text(
               'Đăng bài',
@@ -184,25 +277,44 @@ class _PostPageState extends State<PostPage> {
             const SizedBox(
               height: 20,
             ),
-            SizedBox(
-              height: 50,
-              child: TextField(
-                controller: organizationController,
-                autocorrect: false,
-                enableSuggestions: false,
-                decoration: InputDecoration(
-                    prefixIcon: const Icon(
-                      Icons.handshake,
-                      color: Colors.orange,
+            //
+            FutureBuilder<String?>(
+              future: fetchData(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  // While the future is loading
+                  return const CircularProgressIndicator(); // or any other loading indicator
+                } else if (snapshot.hasError) {
+                  // If there's an error in retrieving data
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  // If the data is successfully retrieved
+                  final data = snapshot.data;
+                  organizationController =
+                      TextEditingController(text: data ?? "");
+                  return SizedBox(
+                    height: 50,
+                    child: TextField(
+                      controller: organizationController,
+                      autocorrect: false,
+                      enableSuggestions: false,
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(
+                          Icons.handshake,
+                          color: Colors.orange,
+                        ),
+                        hintText: "Tổ chức thiện nguyện Đà Nẵng",
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey.withOpacity(0.2),
+                      ),
                     ),
-                    hintText: "Tổ chức thiện nguyện Đà Nẵng",
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    filled: true,
-                    fillColor: Colors.grey.withOpacity(0.2)),
-              ),
+                  );
+                }
+              },
             ),
             const SizedBox(
               height: 20,
