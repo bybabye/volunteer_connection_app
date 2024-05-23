@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:volunteer_connection/themes/app_assets.dart';
+import 'package:volunteer_connection/themes/app_styles.dart';
 
 class CustomChat extends StatelessWidget {
   const CustomChat(
@@ -44,7 +45,14 @@ class CustomChat extends StatelessWidget {
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [Text(nameGruop), const Text("Tin nhan : aaaa")],
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  nameGruop,
+                  style: AppStyles.h3,
+                ),
+                if (lassMess != "") Text(lassMess)
+              ],
             )
           ],
         ));

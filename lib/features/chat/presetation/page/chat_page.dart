@@ -115,7 +115,7 @@ class _ChatPageState extends State<ChatPage> {
                                   MessagePage(
                                     avatar: user.avatar,
                                     name: user.name,
-                                    chatId: chats[index].id,
+                                    chat: chats[index],
                                   ),
                                 );
                               },
@@ -125,10 +125,22 @@ class _ChatPageState extends State<ChatPage> {
                                 avatar: user.avatar,
                               ),
                             )
-                          : CustomChat(
-                              nameGruop: "Nhóm thiện nguyện",
-                              lassMess: "",
-                              avatar: "",
+                          : InkWell(
+                              onTap: () {
+                                navigationService.navigateToPage(
+                                  MessagePage(
+                                    avatar: "",
+                                    name: "",
+                                    chat: chats[index],
+                                  ),
+                                );
+                                print(chats[index].id);
+                              },
+                              child: CustomChat(
+                                nameGruop: "Nhóm thiện nguyện",
+                                lassMess: "",
+                                avatar: "",
+                              ),
                             );
                     },
                   ),

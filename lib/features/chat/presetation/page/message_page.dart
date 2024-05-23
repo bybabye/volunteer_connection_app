@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
-import 'package:volunteer_connection/core/entites/user.dart';
+import 'package:volunteer_connection/core/routers/navigation_service.dart';
+
 import 'package:volunteer_connection/features/auth/presentation/providers/auth_provider.dart';
+import 'package:volunteer_connection/features/chat/domain/entity/chat.dart';
 import 'package:volunteer_connection/features/chat/domain/entity/message.dart';
+import 'package:volunteer_connection/features/chat/presetation/page/sub_message_page.dart';
 import 'package:volunteer_connection/features/chat/presetation/providers/chat_provider.dart';
+import 'package:volunteer_connection/features/chat/presetation/providers/socket_provider.dart';
 import 'package:volunteer_connection/features/chat/presetation/widgets/custom_message_text.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:volunteer_connection/themes/app_assets.dart';
 import 'package:volunteer_connection/themes/app_styles.dart';
 
 class MessagePage extends StatefulWidget {
@@ -13,10 +19,10 @@ class MessagePage extends StatefulWidget {
       {super.key,
       required this.avatar,
       required this.name,
-      required this.chatId});
+      required this.chat});
   final String avatar;
   final String name;
-  final String chatId;
+  final Chat chat;
 
   @override
   State<MessagePage> createState() => _MessagePageState();
@@ -28,16 +34,45 @@ class _MessagePageState extends State<MessagePage> {
   final TextEditingController _controller = TextEditingController();
   late AuthProvider _auth;
   late ChatProvider _chat;
+  late SocketIOProvider _socketIO;
+  final ScrollController _scrollController = ScrollController();
   bool _isLoading = true;
+  final NavigationService navigationService =
+      GetIt.instance.get<NavigationService>();
   @override
   void initState() {
     super.initState();
-    _auth = Provider.of<AuthProvider>(context, listen: false);
-
-    _chat = Provider.of<ChatProvider>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _socketIO.socket.emit('join-room', {
+        'chatId': widget.chat.id,
+      });
+      _loadMessages();
+      _socketIO.setScrollController(_scrollController);
+    });
   }
 
-  Future<void> _loadMessages() async {}
+  Future<void> _loadMessages() async {
+    try {
+      final messages = await _chat.getMessForId(id: widget.chat.id);
+      // Cập nhật trạng thái và dữ liệu sau khi tải xong
+      setState(() {
+        _socketIO.messages = messages;
+        _isLoading = false;
+      });
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      });
+    } catch (e) {
+      print("Error loading messages: $e");
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,26 +80,45 @@ class _MessagePageState extends State<MessagePage> {
     _chat = Provider.of<ChatProvider>(context);
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
+    _socketIO = Provider.of<SocketIOProvider>(context);
+    _socketIO.uid = _auth.user.id;
+    // kiem tra xem id co trong admin
+    bool isCheck = isMember(_auth.user.id);
     return Scaffold(
       appBar: AppBar(
         title: Row(
           children: [
-            CircleAvatar(
-              radius: 20,
-              backgroundImage: NetworkImage(widget.avatar),
-              backgroundColor: Colors.greenAccent[100],
-            ),
+            widget.chat.type == 'private'
+                ? CircleAvatar(
+                    radius: 20,
+                    backgroundImage: NetworkImage(widget.avatar),
+                    backgroundColor: Colors.greenAccent[100],
+                  )
+                : CircleAvatar(
+                    radius: 20,
+                    backgroundImage: const AssetImage(AppAssets.user),
+                    backgroundColor: Colors.greenAccent[100],
+                  ),
             const SizedBox(
               width: 10,
             ),
             Text(
-              widget.name,
+              widget.chat.type == 'private' ? widget.name : "nhóm thiện nguyện",
               style: AppStyles.h2,
             ),
           ],
         ),
         elevation: 1,
         backgroundColor: Colors.white,
+        actions: [
+          if (isCheck)
+            IconButton(
+                onPressed: () {
+                  navigationService
+                      .navigateToPage(SubMessagePage(chat: widget.chat));
+                },
+                icon: const Icon(Icons.menu))
+        ],
       ),
       body: SingleChildScrollView(
         child: SizedBox(
@@ -74,38 +128,26 @@ class _MessagePageState extends State<MessagePage> {
               SizedBox(
                 height: height * 0.8,
                 width: width,
-                child: FutureBuilder<List<Message>>(
-                  future: _chat.getMessForId(
-                      id: widget.chatId), // yourId là id mà bạn muốn truyền vào
-                  builder: (BuildContext context,
-                      AsyncSnapshot<List<Message>> snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      // Hiển thị loading khi Future đang trong quá trình thực thi
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      // Hiển thị lỗi nếu có lỗi xảy ra trong quá trình thực thi Future
-                      return Center(
-                          child: Text('Error: ${snapshot.error.toString()}'));
-                    } else {
-                      // Hiển thị dữ liệu khi Future thực thi thành công
-                      final List<Message> messages = snapshot.data!;
-                      print(messages);
-                      return ListView.builder(
-                          itemCount: messages.length,
-                          itemBuilder: (_, index) {
-                            return CustomMessageText(
-                              isUser:
-                                  messages[index].sender.id == _auth.user.id,
-                              avatar: messages[index].sender.avatar,
-                              time: timeago.format(messages[index].sentTime,
-                                  locale: 'vi'),
-                              text: messages[index].content,
-                              type: messages[index].type,
-                            );
-                          });
-                    }
-                  },
-                ),
+                child: _isLoading
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        controller: _scrollController,
+                        itemCount: _socketIO.messages.length,
+                        itemBuilder: (_, index) {
+                          Message message = _socketIO.messages[index];
+                          return CustomMessageText(
+                            isUser: message.sender.id == _auth.user.id,
+                            avatar: message.sender.avatar,
+                            time:
+                                timeago.format(message.sentTime, locale: 'vi'),
+                            text: message.content,
+                            type: message.type,
+                          );
+                        },
+                      ),
               ),
               Container(
                 height: height * 0.1,
@@ -143,15 +185,31 @@ class _MessagePageState extends State<MessagePage> {
                       flex: 1,
                       child: InkWell(
                         onTap: () async {
-                          Message mess = Message(
-                              id: "",
-                              type: "text",
-                              sender: _auth.user,
-                              content: _controller.text,
-                              sentTime: DateTime.now(),
-                              chatId: widget.chatId);
-                          print(mess.type);
-                          await _chat.createMessage(mess: mess);
+                          if (_controller.text.isNotEmpty) {
+                            Message mess = Message(
+                                id: "",
+                                type: "text",
+                                sender: _auth.user,
+                                content: _controller.text,
+                                sentTime: DateTime.now(),
+                                chatId: widget.chat.id);
+
+                            await _chat.createMessage(mess: mess);
+                            _socketIO.sendMessage(widget.chat.id, {
+                              "content": _controller.text,
+                              "type": "text",
+                              "senderId": {
+                                "_id": _auth.user.id,
+                                "name": _auth.user.name,
+                                "avatar": _auth.user.avatar,
+                              },
+                              "chatId": widget.chat.id,
+                              "sentTime": "${DateTime.now()}",
+                            });
+                            setState(() {
+                              _controller.text = "";
+                            });
+                          }
                         },
                         child: const Icon(
                           Icons.send,
@@ -169,12 +227,7 @@ class _MessagePageState extends State<MessagePage> {
     );
   }
 
-  User? findOtherMemberId(String id, List<User> members) {
-    for (User member in members) {
-      if (member.id != id) {
-        return member;
-      }
-    }
-    return null;
+  bool isMember(String id) {
+    return widget.chat.administrator.any((user) => user.id == id);
   }
 }

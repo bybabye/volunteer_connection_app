@@ -10,7 +10,7 @@ class ConstanstConfig {
 
   static String updateUser = "$localhost/api/user/update-user";
   // static String updateUser1 = "$production/api/user/update-user";
-
+  static const String apiSocket = "http://10.0.2.2:8800";
   //chat
   static String getChat = "$localhost/api/chat/get-user-chats";
   //message
