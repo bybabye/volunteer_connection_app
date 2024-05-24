@@ -27,6 +27,7 @@ class _PostPageState extends State<PostPage> {
   String city = 'Quảng Trị';
   final ImagePicker imagePicker = ImagePicker();
   List<XFile> imageFileList = [];
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -164,16 +165,22 @@ class _PostPageState extends State<PostPage> {
         title: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
           GestureDetector(
             onTap: () async {
-              // logData();
-              // THÊM THAM SỐ IMAGE VÀO _handlePostCreation
+              setState(() {
+                _isLoading =
+                    true; // Khi người dùng bấm nút, bắt đầu hiển thị biểu tượng loading
+              });
               final result = await _handlePostCreation(
-                  // "abc", addressController.text, [contentController.text]);
-                  organizationController.text,
-                  addressController.text,
-                  [contentController.text]);
+                organizationController.text,
+                addressController.text,
+                [contentController.text],
+              );
+              setState(() {
+                _isLoading =
+                    false; // Sau khi hoàn thành xử lý, ẩn biểu tượng loading
+              });
               print(result);
               if (result == "success") {
-                // Dang bai thanh cong thi get thong tin show o newfeed
+                // Nếu đăng bài thành công
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text('Đăng bài thành công'),
@@ -189,10 +196,12 @@ class _PostPageState extends State<PostPage> {
                 );
               }
             },
-            child: const Text(
-              'Đăng bài',
-              style: TextStyle(color: Colors.blue, fontSize: 15),
-            ),
+            child: _isLoading
+                ? const CircularProgressIndicator() // Hiển thị biểu tượng loading nếu _isLoading là true
+                : const Text(
+                    'Đăng bài',
+                    style: TextStyle(color: Colors.blue, fontSize: 15),
+                  ),
           ),
         ]),
       ),
